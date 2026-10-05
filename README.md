@@ -456,6 +456,10 @@ En el código original, cuatro de los cinco requerimientos (R1, R3, R4, R5) habr
 
 `req-1`, `req-2`, `req-3`, `req-4`, `req-5`.
 
+### Lo que más nos costo Entender o Extender
+
+Lo que más nos costó entender fue seguir el flujo completo de una transferencia, porque la responsabilidad está distribuida entre varias abstracciones y servicios. También fue necesario revisar cómo se ensamblan las dependencias en `main.py` para extender el sistema sin modificar la lógica central. Aunque al principio requirió más lectura, esta separación facilitó agregar nuevos tipos de transferencia y repositorios.
+
 
 ## Bloque 6 - Cierre 
 
