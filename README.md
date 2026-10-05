@@ -8,6 +8,46 @@ Repositorio para el Laboratorio de SOLID de la materia Ingeniería de Software I
 * Pablo Andres Niño Barreto (pninob@unal.edu.co)
 * Sergio Tovar Vasquez (setovarv@unal.edu.co)
 
+## Documentación de ejecución
+
+### Requisitos
+
+El proyecto utiliza **Python 3** y `pytest` para las pruebas unitarias. No se requiere una base de datos PostgreSQL real ni un proveedor real de SMS/PUSH: las integraciones de persistencia y notificación están simuladas mediante mensajes en consola.
+
+### Ejecutar el programa principal
+
+Desde la raíz del proyecto se ejecuta:
+
+```powershell
+python main.py
+```
+
+La ejecución demuestra los escenarios principales del Bloque 4:
+
+- **R1:** transferencia por llave de `$50.000` con comisión `$0`.
+- **R2:** transferencia desde una cuenta infantil y rechazo de un segundo retiro que supera el límite diario de `$200.000`.
+- **R3:** una transferencia exitosa genera mensajes `[SMS]` y `[PUSH]`.
+- **R4:** una transferencia exitosa genera `[AUDITORIA]` y `[ANTIFRAUDE]`.
+- **R5:** la persistencia se simula mediante mensajes `[POSTGRES]`.
+
+En la ejecución realizada, R1 descontó exactamente `$50.000`; la cuenta infantil realizó un primer retiro de `$120.000` y rechazó un segundo retiro de `$100.000`, manteniendo el saldo en `$880.000`. Las transferencias exitosas mostraron `[SMS]`, `[PUSH]`, `[AUDITORIA]`, `[ANTIFRAUDE]` y `[POSTGRES]`.
+
+### Ejecutar las pruebas unitarias
+
+Las pruebas oficiales del Bloque 3 se ejecutan con:
+
+```powershell
+python -m pytest tests -v
+```
+
+El resultado esperado y obtenido es **5 pruebas aprobadas**. Las pruebas utilizan dobles de prueba para el repositorio y el notificador, por lo que no necesitan Oracle ni un servicio de SMS real.
+
+> **Nota sobre `experimentos/test_prueba_imposible.py`:** si se ejecuta `python -m pytest` sin indicar la carpeta `tests`, pytest también descubre ese archivo experimental. Su objetivo es documentar la prueba imposible del Bloque 1 y utiliza la antigua construcción de `TransaccionService()` sin inyección de dependencias; por ello no forma parte de las cinco pruebas oficiales del Bloque 3.
+
+### Evidencias de ejecución
+
+La evidencia de las cinco pruebas unitarias se encuentra en `tests/SS_5_tests.jpg`. La salida de `main.py` permite comprobar visualmente los criterios de aceptación de R1 a R5.
+
 
 ## Bloque 0 - Commit Inicial - Traducción de Java a Python 
 Se subió el bloque 0 del laboratorio, que incluye la traducción de los códigos del laboratorio, originalmente en Java y traducidos a Python. La salida del programa principal quedó congelada en `salida_original.txt` como prueba de caracterización.
@@ -309,45 +349,7 @@ Se implementaron las cinco pruebas solicitadas:
 Las cinco pruebas fueron ejecutadas mediante `pytest`:
 
 ![Resultado de las 5 pruebas](tests/SS_5_tests.jpg)
-## Documentación de ejecución
 
-### Requisitos
-
-El proyecto utiliza **Python 3** y `pytest` para las pruebas unitarias. No se requiere una base de datos PostgreSQL real ni un proveedor real de SMS/PUSH: las integraciones de persistencia y notificación están simuladas mediante mensajes en consola.
-
-### Ejecutar el programa principal
-
-Desde la raíz del proyecto se ejecuta:
-
-```powershell
-python main.py
-```
-
-La ejecución demuestra los escenarios principales del Bloque 4:
-
-- **R1:** transferencia por llave de `$50.000` con comisión `$0`.
-- **R2:** transferencia desde una cuenta infantil y rechazo de un segundo retiro que supera el límite diario de `$200.000`.
-- **R3:** una transferencia exitosa genera mensajes `[SMS]` y `[PUSH]`.
-- **R4:** una transferencia exitosa genera `[AUDITORIA]` y `[ANTIFRAUDE]`.
-- **R5:** la persistencia se simula mediante mensajes `[POSTGRES]`.
-
-En la ejecución realizada, R1 descontó exactamente `$50.000`; la cuenta infantil realizó un primer retiro de `$120.000` y rechazó un segundo retiro de `$100.000`, manteniendo el saldo en `$880.000`. Las transferencias exitosas mostraron `[SMS]`, `[PUSH]`, `[AUDITORIA]`, `[ANTIFRAUDE]` y `[POSTGRES]`.
-
-### Ejecutar las pruebas unitarias
-
-Las pruebas oficiales del Bloque 3 se ejecutan con:
-
-```powershell
-python -m pytest tests -v
-```
-
-El resultado esperado y obtenido es **5 pruebas aprobadas**. Las pruebas utilizan dobles de prueba para el repositorio y el notificador, por lo que no necesitan Oracle ni un servicio de SMS real.
-
-> **Nota sobre `experimentos/test_prueba_imposible.py`:** si se ejecuta `python -m pytest` sin indicar la carpeta `tests`, pytest también descubre ese archivo experimental. Su objetivo es documentar la prueba imposible del Bloque 1 y utiliza la antigua construcción de `TransaccionService()` sin inyección de dependencias; por ello no forma parte de las cinco pruebas oficiales del Bloque 3.
-
-### Evidencias de ejecución
-
-La evidencia de las cinco pruebas unitarias se encuentra en `tests/SS_5_tests.jpg`. La salida de `main.py` permite comprobar visualmente los criterios de aceptación de R1 a R5.
 
 ## Respuestas a las preguntas del laboratorio
 
@@ -455,6 +457,39 @@ En el código original, cuatro de los cinco requerimientos (R1, R3, R4, R5) habr
 ### Commits del bloque 4
 
 `req-1`, `req-2`, `req-3`, `req-4`, `req-5`.
+
+## Bloque 5 - Review Cruzado
+
+En este bloque se realiza un review cruzado con otra pareja de estudiantes.
+
+### Lista de revisión
+
+| Criterio | Sí | No |
+|---|:---:|:---:|
+| Entendimos qué hace cada clase leyendo solo su nombre y sus métodos públicos. | X | |
+| Pudimos reutilizar piezas existentes sin copiar y pegar código. | X | |
+| Implementamos el requerimiento sin modificar la lógica de clases existentes. | X | |
+| No encontramos métodos vacíos ni que lancen “no aplica”. | X | |
+| No encontramos `if`/`switch` por tipo que tuviéramos que extender. | X | |
+| Las pruebas existentes siguieron pasando después de nuestro cambio. | X | |
+| No encontramos abstracciones innecesarias (interfaces que no aportan). | X | |
+
+
+### Resultado de la revisión
+
+La revisión cruzada fue positiva. El código permitió entender las
+responsabilidades de las clases a partir de sus nombres y métodos públicos,
+y fue posible reutilizar componentes existentes para implementar el nuevo
+requerimiento sin recurrir a copiar y pegar código.
+
+Además, no se encontraron métodos vacíos o con operaciones que no aplicaran,
+ni fue necesario extender estructuras `if` o `switch` para agregar el nuevo
+requerimiento. Las pruebas existentes continuaron pasando después de los
+cambios, lo que permitió comprobar que el comportamiento previo se mantuvo.
+
+Finalmente, no se identificaron abstracciones innecesarias durante la
+revisión. En general, la estructura del proyecto permitió extender el sistema
+manteniendo separadas las responsabilidades principales.
 
 
 ## Bloque 6 - Cierre 
